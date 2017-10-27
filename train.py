@@ -101,7 +101,7 @@ class Corpus(object):
 
 class Vocabulary(object):
 
-    def __init__(self, vocab_txt):
+    def __init__(self, vocab_txt=VOCABULARY_FILE):
         self.words = []
         self.build_vocab(vocab_txt)
         self.vocab_len = len(self.words)
