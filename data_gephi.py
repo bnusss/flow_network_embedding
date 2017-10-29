@@ -5,6 +5,7 @@ import numpy as np
 from train import VOCABULARY_FILE, Vocabulary
 import networkx as nx
 import matplotlib.pyplot as plt
+from sklearn.neighbors import NearestNeighbors
 
 avgdist_file = '../data/dist_avg.npy'
 count_file = '../data/count.npy'
@@ -123,15 +124,35 @@ def draw_nx_words(words, avgdistvec, avgdist, count, vocab):
 #    plt.savefig("graph.pdf")
     
 
+def similarity(avgdistvec, vocab, words):
+    coordinates = [i for i in zip(list(avgdistvec[:,0][:5000]), list(avgdistvec[:,1][:5000]))]
+    #for i in coordinates:
+    #    print(i)
+    nbrs = NearestNeighbors(n_neighbors=5).fit(coordinates)
+    distances, indices = nbrs.kneighbors(coordinates)
+    distances = np.array(distances)
+    indices = np.array(indices)
+    #print(distances)
+    #print(distances.shape)
+    #print(indices)
+    #print(indices.shape)
+    
+    for word in words:
+        idx = vocab.index(word)
+        #print(indices[idx,:])
+        similar_words = [vocab.get_word(i) for i in indices[idx,:]]
+        print(word, similar_words)
+
+
 def main():
     avgdist = np.load(avgdist_file)
-    print(avgdist.shape)
+    #print(avgdist.shape)
     
     count = np.load(count_file)
-    print(count.shape)
+    #(count.shape)
     
     avgdistvec = np.load(avgdistvec_file)
-    print(avgdist.shape)
+    #print(avgdist.shape)
     
     vocab = Vocabulary(VOCABULARY_FILE)
     
@@ -140,8 +161,10 @@ def main():
     #gen_node_xy(avgdistvec, vocab)
     #draw_nx(avgdistvec, avgdist, count, vocab)
     #words = ['man', 'woman', 'king', 'queen']
-    words = ['man', 'woman', 'king', 'queen', 'increase', 'work', 'eat', 'drink','satisfaction','apple']
-    draw_nx_words(words, avgdistvec, avgdist, count, vocab)
+    #words = ['man', 'woman', 'king', 'queen', 'increase', 'work', 'eat', 'drink','satisfaction','apple']
+    #draw_nx_words(words, avgdistvec, avgdist, count, vocab)
+    words = ['work', 'boy', 'english']
+    similarity(avgdistvec, vocab, words)
 
 
 if __name__ == '__main__':
