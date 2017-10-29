@@ -5,6 +5,7 @@
 Read wiki data, generate word distance matrix and word counts matrix.
 """
 
+from __future__ import print_function
 import re
 import os
 import glob
@@ -135,28 +136,28 @@ def main(corpus_dir):
     for line_words in corpus:
         j += 1
         if j % 1000 ==0:
-            print j
+            print(j)
         cal.traverse(line_words, vocab)
 
     b = cal.counts
     i,j = np.unravel_index(b.argmax(), b.shape)
-    print 'i=%s, j=%s' % (i, j)
-    print vocab.get_word(i), vocab.get_word(j), cal.dists[i,j], cal.counts[i,j]
+    print('i=%s, j=%s' % (i, j))
+    print(vocab.get_word(i), vocab.get_word(j), cal.dists[i,j], cal.counts[i,j])
 
     time_str = datetime.datetime.fromtimestamp(time.time()).strftime("%Y%m%d%H%M%S")
     pkl_path = os.path.join(PKL_PATH, time_str+corpus_dir.split('/')[-2])
-    print 'pkl_path', pkl_path
+    print('pkl_path', pkl_path)
     cal.dump_matrix(pkl_path)
 
     cal_load = CalDist(len(vocab.words), WINDOW_SIZE, pkl_path)
-    print np.array_equal(cal.dists, cal_load.dists)
-    print np.array_equal(cal.counts, cal_load.counts)
+    print(np.array_equal(cal.dists, cal_load.dists))
+    print(np.array_equal(cal.counts, cal_load.counts))
     
 
 if __name__ == '__main__':
     CORPUS_DIR = [dir_prefix % i for i in tag]
     CORPUS_DIR = CORPUS_DIR[16:]
-    print CORPUS_DIR
+    print(CORPUS_DIR)
     pool = Pool(processes=8)
     pool.map(main, CORPUS_DIR)
 
