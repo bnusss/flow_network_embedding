@@ -1,16 +1,15 @@
 #-*- coding: utf-8 -*-
 import glob
 import numpy as np
-import matplotlib.pyplot as plt
 
 files = []
 
 
 def main():
     tags = []
-    for i in glob.glob('/data/flow/*dists.npy'):
+    for i in glob.glob('/data2/wangshuo/pkl_dir3/*dists.npy'):
         tag = i[25:27]
-        for j in glob.glob('/data/flow/*%scounts*' % tag):
+        for j in glob.glob('/data2/wangshuo/pkl_dir3/*%scounts*' % tag):
             if tag in tags:
                 continue
             else:
@@ -32,21 +31,23 @@ def main():
 
     print dist.shape
     print count.shape
-    np.save('/home/shawnwang/workspace/research/flow_network_embedding/data/dist.npy', dist)
-    np.save('/home/shawnwang/workspace/research/flow_network_embedding/data/count.npy', count)
+    np.save('/data2/wangshuo/dist.npy', dist)
+    np.save('/data2/wangshuo/count.npy', count)
             
 
     
 def get_avg_flow():
-    counts = np.load('/home/shawnwang/workspace/research/flow_network_embedding/data/count.npy')
-    dists = np.load('/home/shawnwang/workspace/research/flow_network_embedding/data/dist.npy')
+    counts = np.load('/data2/wangshuo/count.npy')
+    dists = np.load('/data2/wangshuo/dist.npy')
+    counts = counts.astype(np.float64)
+    dists = dists.astype(np.float64)
     eps = np.finfo(np.float64).eps
     counts2 = np.copy(counts)
     counts[np.where(counts==0)] = eps
     dists_avg = np.true_divide(dists, counts)
     dists_avg[np.where(counts2==0)] = 0
     print dists_avg.shape
-    np.save('/home/shawnwang/workspace/research/flow_network_embedding/data/dist_avg.npy', dists_avg)
+    np.save('/data2/wangshuo/dist_avg.npy', dists_avg)
 
 
 def analysis():
@@ -79,4 +80,6 @@ def analysis():
     #plt.show()
 
 if __name__ == '__main__':
-    analysis()
+    #analysis()
+    main()
+    get_avg_flow()
